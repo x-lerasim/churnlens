@@ -1,0 +1,28 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8
+    container_name: churnlens-clickhouse
+    mem_limit: 4g
+    environment:
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER:-churnlens}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-churnlens}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    ports:
+      - "${CLICKHOUSE_HTTP_PORT:-8123}:8123"
+      - "${CLICKHOUSE_NATIVE_PORT:-9000}:9000"
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./docker/clickhouse/memory.xml:/etc/clickhouse-server/config.d/memory.xml:ro
+      - ./docker/clickhouse/profile.xml:/etc/clickhouse-server/users.d/profile.xml:ro
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--user", "${CLICKHOUSE_USER:-churnlens}", "--password", "${CLICKHOUSE_PASSWORD:-churnlens}", "-q", "SELECT 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  clickhouse_data:
