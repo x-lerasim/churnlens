@@ -4,3 +4,7 @@ airflow/logs/*
 dbt/target/
 dbt/logs/
 __pycache__/
+*.log
+dbt/.user.yml
+dbt/target/
+dbt/logs/
