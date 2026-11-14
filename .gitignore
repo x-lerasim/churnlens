@@ -1,0 +1,6 @@
+.env
+data/raw/*
+airflow/logs/*
+dbt/target/
+dbt/logs/
+__pycache__/
